@@ -5,6 +5,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator nexusPrisma {
+   provider = "nexus-prisma"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -21,7 +25,7 @@ model User {
   avatar  String?
   email   String?  @unique
   role    Role     @default(USER)
-  posts   Post[]
+  // posts   Post[]
   profile Profile?
   tokens  RefreshToken[]
 }
@@ -41,14 +45,14 @@ model RefreshToken {
   user   User @relation(fields: [userId], references: [id])
 }
 
-model Post {
-  authorId  String?
-  content   String?
-  id        Int     @default(autoincrement()) @id
-  published Boolean @default(false)
-  title     String
-  author    User?   @relation(fields: [authorId], references: [id])
-}
+// model Post {
+//   authorId  String?
+//   content   String?
+//   id        Int     @default(autoincrement()) @id
+//   published Boolean @default(false)
+//   title     String
+//   author    User?   @relation(fields: [authorId], references: [id])
+// }
 
 model Profile {
   id      String     @id
