@@ -1,6 +1,5 @@
-import { connectionPlugin, fieldAuthorizePlugin, makeSchema } from 'nexus'
+import { connectionPlugin, fieldAuthorizePlugin, makeSchema, queryComplexityPlugin } from 'nexus'
 import { join } from 'path'
-
 import * as types from './types';
 
 export const schema = makeSchema({
@@ -14,6 +13,7 @@ export const schema = makeSchema({
           return node.id;
         },
       }),
+      queryComplexityPlugin()
     ],
     outputs: {
         typegen: join(process.cwd(), 'node_modules', '@types', 'nexus-typegen', 'index.d.ts'),

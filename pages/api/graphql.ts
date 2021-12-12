@@ -5,6 +5,11 @@ import cors from 'micro-cors'
 import { permissions } from '../../graphql/permissions'
 import { schema } from '../../graphql/schema'
 import { createContext } from '../../graphql/context'
+import depthLimit from 'graphql-depth-limit'
+import { fieldExtensionsEstimator, getComplexity, simpleEstimator } from 'graphql-query-complexity'
+import { separateOperations } from 'graphql'
+import { GraphQLRequestContext, PluginDefinition } from 'apollo-server-core'
+import { BaseContext } from 'next/dist/shared/lib/utils'
 
 export const config = {
   api: {
@@ -14,9 +19,41 @@ export const config = {
 
 const schemaWithMiddleware = applyMiddleware(schema, permissions);
 
+const complexityPlugin: PluginDefinition = {
+    async requestDidStart() {
+      return {
+        async didResolveOperation({request, document}: GraphQLRequestContext<BaseContext>): Promise<void> {
+            const complexity = getComplexity({
+                schema,
+                query: request.operationName ? 
+                    separateOperations(document!)[request.operationName] :
+                    document!,
+                variables: request.variables,
+                estimators: [
+                    fieldExtensionsEstimator(),
+                    simpleEstimator({defaultComplexity: 1})
+                ]
+            });
+            if (complexity >= 500) {
+                throw new Error(
+                  `Complexity (${complexity}) is over the 500 maximum allowed.`,
+                );
+              };
+        },
+      }
+    },
+  };
+
+  
 const apolloServer = new ApolloServer({
    schema: schemaWithMiddleware,
-   context: createContext
+   context: createContext,
+   validationRules: [
+       depthLimit(3)
+    ],
+    plugins: [ 
+        complexityPlugin,
+    ]
   });
 
 let apolloServerHandler: NextApiHandler;
