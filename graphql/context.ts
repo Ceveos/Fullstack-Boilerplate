@@ -22,6 +22,14 @@ export const tokens = {
     },
   }
 
+export function userIdentifier(ctx: Context): string {
+  var ip = (ctx.req.headers['x-forwarded-for'] as string)?.split(',').shift() || 
+        ctx.req.socket.remoteAddress
+  console.log(`IP Address: ${ip} | user id: ${ctx.userId}`);
+  return  ctx.userId ?? ip!;
+
+}
+
 export interface Token {
   userId: number
   type: string
@@ -54,6 +62,6 @@ export const createContext = (ctx: IncomingContext): Context => {
     return {
         ...ctx,
         prisma,
-        userId: ""
+        userId: "test-hello-world"
     }
 }
