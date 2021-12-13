@@ -19,6 +19,12 @@ enum Role {
   ADMIN
 }
 
+enum AuthType {
+  EMAIL
+  SSO
+  TOKEN
+}
+
 model User {
   id      String   @id @default(uuid())
   name    String
@@ -28,8 +34,8 @@ model User {
   // posts   Post[]
   profile Profile?
   tokens  RefreshToken[]
+  auths   UserAuth[]
 }
-
 
 model RefreshToken {
   id         Int       @id @default(autoincrement())
@@ -45,6 +51,12 @@ model RefreshToken {
   user   User @relation(fields: [userId], references: [id])
 }
 
+
+model UserAuth {
+  userId    String @id
+  user      User @relation(fields: [userId], references: [id])
+  authType  AuthType
+}
 // model Post {
 //   authorId  String?
 //   content   String?
