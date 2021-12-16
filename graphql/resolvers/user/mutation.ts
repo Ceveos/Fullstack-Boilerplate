@@ -12,11 +12,11 @@ export const signupUser = mutationField('signupUser', {
         name: stringArg(),
         email: nonNull(stringArg()),
         password: nonNull(stringArg()),
-        avatar: nonNull(stringArg()),
+        avatar: stringArg(),
 
     },
-    resolve: (_, { name, email, password, avatar }, ctx) => {
-        
+    resolve: async (_, { name, email, password, avatar }, ctx) => {
+        const hashedPassword = await hashPassword(password);
         return ctx.prisma.user.create({
         data: {
             name: name ?? email,
@@ -24,7 +24,7 @@ export const signupUser = mutationField('signupUser', {
             email,
             password: {
                 create: {
-                    password: hashPassword(password),
+                    password: hashedPassword,
                     forceChange: false
                 }
             }
