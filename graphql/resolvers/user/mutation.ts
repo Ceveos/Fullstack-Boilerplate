@@ -1,26 +1,41 @@
 import { serialize } from 'cookie';
 import {mutationField, nonNull, stringArg} from 'nexus';
 import { sign, verify } from 'jsonwebtoken'
+import { hashPassword } from '../../utils/crypto';
 
 const { JWT_SECRET } = process.env;
 
+// When a user signs up proper (email + password)
 export const signupUser = mutationField('signupUser', {
     type: 'User',
     args: {
         name: stringArg(),
+        email: nonNull(stringArg()),
+        password: nonNull(stringArg()),
         avatar: nonNull(stringArg()),
+
     },
-    resolve: (_, { name, avatar }, ctx) => {
+    resolve: (_, { name, email, password, avatar }, ctx) => {
+        
         return ctx.prisma.user.create({
         data: {
-            id: ctx.userId ?? undefined,
-            name: name ?? "",
-            avatar
+            name: name ?? email,
+            avatar,
+            email,
+            password: {
+                create: {
+                    password: hashPassword(password),
+                    forceChange: false
+                }
+            }
         },
+        include: {
+            password: true
+        }
         })
     },
 })
-
+  
 export const loginUser = mutationField('userLogin', {
     type: 'String',
     args: {
