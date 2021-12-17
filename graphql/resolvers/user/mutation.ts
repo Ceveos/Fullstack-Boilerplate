@@ -1,7 +1,8 @@
 import { serialize } from 'cookie';
-import {mutationField, nonNull, stringArg} from 'nexus';
+import {mutationField, nonNull, nullable, stringArg} from 'nexus';
 import { sign, verify } from 'jsonwebtoken'
 import { hashPassword } from '../../utils/crypto';
+import { AuthPayload } from '../../models';
 
 const { JWT_SECRET } = process.env;
 
@@ -13,7 +14,6 @@ export const signupUser = mutationField('signupUser', {
         email: nonNull(stringArg()),
         password: nonNull(stringArg()),
         avatar: stringArg(),
-
     },
     resolve: async (_, { name, email, password, avatar }, ctx) => {
         const hashedPassword = await hashPassword(password);
@@ -36,13 +36,13 @@ export const signupUser = mutationField('signupUser', {
     },
 })
   
-export const loginUser = mutationField('userLogin', {
-    type: 'String',
+export const userLogin = mutationField('userLogin', {
+    type: 'AuthPayload',
     args: {
-        id: stringArg(),
-        name: stringArg(),
+        email: stringArg(),
+        password: stringArg(),
     },
-    resolve: (_, { id, name }, ctx) => {
+    resolve: (_, { email, password }, ctx) => {
         console.log("Pre-test");
         let cookieStr = serialize('foo', 'bar', {
             httpOnly: true,
@@ -53,6 +53,14 @@ export const loginUser = mutationField('userLogin', {
         console.log(cookieStr);
         ctx.res.setHeader('Set-Cookie', cookieStr);
       
-        return sign("hello world", JWT_SECRET!);
+        return {
+            token: sign("hello world", JWT_SECRET!),
+            user: {
+                id: 'asd',
+                name: 'test',
+                email: '@ing.com',
+                avatar: "asd"
+            }
+        } 
     },
 })
