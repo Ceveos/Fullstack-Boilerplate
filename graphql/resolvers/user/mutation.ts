@@ -3,9 +3,7 @@ import {mutationField, nonNull, stringArg} from 'nexus';
 import { sign, verify } from 'jsonwebtoken'
 import { hashPassword } from '../../utils/crypto';
 import LoginInvalidError from '../../utils/errors/auth/loginInvalid';
-import { ValidateUserCredentials } from '../../models';
-
-const { JWT_SECRET } = process.env;
+import { CreateJWTForUser, CreateRefreshTokenForUser, GetUserByEmail, ValidateUserCredentials } from '../../models';
 
 // When a user signs up proper (email + password)
 export const signupUser = mutationField('signupUser', {
@@ -44,36 +42,28 @@ export const userLogin = mutationField('userLogin', {
         password: nonNull(stringArg()),
     },
     resolve: async (_, { email, password }, ctx) => {
-        console.log("Pre-test");
-        const user = ctx.prisma.user.findUnique({
-            where: {
-                email
-            }
-        });
+        const user = await GetUserByEmail(email);
 
-        if (!(await ValidateUserCredentials(email, password))) {
-            console.log("test");
+        if (user == null || !(await ValidateUserCredentials(user, password))) {
             throw new LoginInvalidError("Invalid username or password");
         }
 
-        let cookieStr = serialize('foo', 'bar', {
+        const refreshToken = await CreateRefreshTokenForUser(user);
+        const token = CreateJWTForUser(user);
+
+        const cookieStr = serialize('refresh_token', refreshToken.hash, {
             httpOnly: true,
             sameSite: 'none',
             secure: true,
-            maxAge: 60 * 60 * 24 * 7 // 1 week
+            maxAge: 60 * 60 * 24 * 7 * 2 // 2 weeks
         });
 
         console.log(cookieStr);
         ctx.res.setHeader('Set-Cookie', cookieStr);
       
         return {
-            token: sign("hello world", JWT_SECRET!),
-            user: {
-                id: 'asd',
-                name: 'test',
-                email: '@ing.com',
-                avatar: "asd"
-            }
+            token,
+            user
         } 
     },
 })

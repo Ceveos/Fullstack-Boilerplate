@@ -4,6 +4,8 @@ import * as NexusPrisma from 'nexus-prisma';
 import { prisma } from '../../db';
 import { verifyPassword } from '../utils/crypto';
 import { GetUserPassword } from './password';
+import cryptoRandomString from 'crypto-random-string';
+import { sign } from 'jsonwebtoken';
 
 export const Users = objectType({
     name: NexusPrisma.User.$name,
@@ -34,16 +36,32 @@ export async function GetUserByEmail(email: string): Promise<Prisma.User | null>
   });
 }
 
-export async function ValidateUserCredentials(email: string, password: string): Promise<boolean> {
-  const user = await GetUserByEmail(email);
-  if (user == null) {
-      return false;
-  }
-
+export async function ValidateUserCredentials(user: Prisma.User, password: string): Promise<boolean> {
   const userPassword = await GetUserPassword(user);
   if (userPassword == null) {
     return false;
   }
 
   return await verifyPassword(password, userPassword.password);
+}
+
+export async function CreateRefreshTokenForUser(user: Prisma.User): Promise<Prisma.RefreshToken> {
+  let hash = cryptoRandomString({length: 100, type: 'base64'});
+  var expiration = new Date();
+  expiration.setDate(expiration.getDate() + 14);
+  return await prisma.refreshToken.create({
+      data: {
+          expiration,
+          hash,
+          label: "Login",
+          userId: user.id,
+      }
+  })
+}
+
+export function CreateJWTForUser(user: Prisma.User): string {
+  const { JWT_SECRET } = process.env;
+  return sign(user, JWT_SECRET!, {
+    expiresIn: "10m"
+  });
 }
