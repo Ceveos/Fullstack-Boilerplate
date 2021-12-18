@@ -1,8 +1,9 @@
 import { serialize } from 'cookie';
-import {mutationField, nonNull, nullable, stringArg} from 'nexus';
+import {mutationField, nonNull, stringArg} from 'nexus';
 import { sign, verify } from 'jsonwebtoken'
 import { hashPassword } from '../../utils/crypto';
-import { AuthPayload } from '../../models';
+import LoginInvalidError from '../../utils/errors/auth/loginInvalid';
+import { ValidateUserCredentials } from '../../models';
 
 const { JWT_SECRET } = process.env;
 
@@ -39,17 +40,29 @@ export const signupUser = mutationField('signupUser', {
 export const userLogin = mutationField('userLogin', {
     type: 'AuthPayload',
     args: {
-        email: stringArg(),
-        password: stringArg(),
+        email: nonNull(stringArg()),
+        password: nonNull(stringArg()),
     },
-    resolve: (_, { email, password }, ctx) => {
+    resolve: async (_, { email, password }, ctx) => {
         console.log("Pre-test");
+        const user = ctx.prisma.user.findUnique({
+            where: {
+                email
+            }
+        });
+
+        if (!(await ValidateUserCredentials(email, password))) {
+            console.log("test");
+            throw new LoginInvalidError("Invalid username or password");
+        }
+
         let cookieStr = serialize('foo', 'bar', {
             httpOnly: true,
             sameSite: 'none',
             secure: true,
             maxAge: 60 * 60 * 24 * 7 // 1 week
         });
+
         console.log(cookieStr);
         ctx.res.setHeader('Set-Cookie', cookieStr);
       

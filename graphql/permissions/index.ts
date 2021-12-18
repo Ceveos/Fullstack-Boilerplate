@@ -13,4 +13,7 @@ export const permissions = shield({
     Mutation: {
         '*': rateLimitRule({window: "1s", max: 5})
     }
+},
+{
+    allowExternalErrors: true
 })

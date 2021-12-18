@@ -46,7 +46,7 @@ export const createContext = (ctx: IncomingContext): Context => {
     const {req, res} = ctx;
     const authorization = req?.headers?.authorization ?? "";
     
-    console.log(req.cookies);
+    // console.log(req.cookies);
 
     // console.log(`Authorization: ${authorization}`);
 

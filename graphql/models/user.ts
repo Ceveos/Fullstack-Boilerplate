@@ -1,8 +1,11 @@
-import { objectType } from 'nexus'
-import * as NexusPrisma from 'nexus-prisma'
-import { prisma } from '../../db'
+import { objectType } from 'nexus';
+import * as Prisma from '@prisma/client';
+import * as NexusPrisma from 'nexus-prisma';
+import { prisma } from '../../db';
+import { verifyPassword } from '../utils/crypto';
+import { GetUserPassword } from './password';
 
-export const User = objectType({
+export const Users = objectType({
     name: NexusPrisma.User.$name,
     description: NexusPrisma.User.$description,
     definition(t) {
@@ -21,4 +24,26 @@ export const User = objectType({
       //       .posts(),
       // })
     },
-  })
+  });
+
+export async function GetUserByEmail(email: string): Promise<Prisma.User | null> { 
+  return await prisma.user.findUnique({
+    where: {
+        email
+    }
+  });
+}
+
+export async function ValidateUserCredentials(email: string, password: string): Promise<boolean> {
+  const user = await GetUserByEmail(email);
+  if (user == null) {
+      return false;
+  }
+
+  const userPassword = await GetUserPassword(user);
+  if (userPassword == null) {
+    return false;
+  }
+
+  return await verifyPassword(password, userPassword.password);
+}
