@@ -6,6 +6,8 @@ import { verifyPassword } from '../utils/crypto';
 import { GetUserPassword } from './password';
 import cryptoRandomString from 'crypto-random-string';
 import { sign } from 'jsonwebtoken';
+import { UserToken } from './userToken';
+import { assert } from '../utils/assert';
 
 export const Users = objectType({
     name: NexusPrisma.User.$name,
@@ -61,7 +63,12 @@ export async function CreateRefreshTokenForUser(user: Prisma.User): Promise<Pris
 
 export function CreateJWTForUser(user: Prisma.User): string {
   const { JWT_SECRET } = process.env;
-  return sign(user, JWT_SECRET!, {
+  assert(JWT_SECRET, 'Missing JWT_SECRET environment variable');
+
+  const token: UserToken = {
+    userId: user.id
+  }
+  return sign(token, JWT_SECRET, {
     expiresIn: "10m"
   });
 }

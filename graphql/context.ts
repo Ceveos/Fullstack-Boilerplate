@@ -1,17 +1,17 @@
 import { PrismaClient } from "@prisma/client";
-import { sign, verify } from 'jsonwebtoken'
+import { JsonWebTokenError, NotBeforeError, sign, TokenExpiredError, verify } from 'jsonwebtoken'
 import { assert } from "./utils/assert";
 import { prisma } from '../db';
 import { IncomingMessage, ServerResponse } from "http";
 import { NextApiRequest, NextApiResponse } from "next";
-
-const { JWT_SECRET } = process.env;
+import { UserToken } from "./models/userToken";
+import { AuthenticationError } from "apollo-server-micro";
 
 export interface Context {
   req: IncomingMessage;
   res: ServerResponse;
   prisma: PrismaClient
-  userId: string | null
+  token: UserToken | null
 }
 
 
@@ -21,13 +21,17 @@ export const tokens = {
       expiry: '1d',
     },
   }
+  
+export function getIpAddress(ctx: Context): string { 
+  const ip = (ctx.req.headers['x-forwarded-for'] as string)?.split(',').shift() || 
+  ctx.req.socket.remoteAddress!
+  return ip;
+}
 
 export function userIdentifier(ctx: Context): string {
-  var ip = (ctx.req.headers['x-forwarded-for'] as string)?.split(',').shift() || 
-        ctx.req.socket.remoteAddress
-  console.log(`IP Address: ${ip} | user id: ${ctx.userId}`);
-  return  ctx.userId ?? ip!;
-
+  const ip = getIpAddress(ctx);
+  console.log(`IP Address: ${ip} | user id: ${ctx.token?.userId}`);
+  return  ctx.token?.userId ?? ip;
 }
 
 export interface Token {
@@ -42,17 +46,33 @@ interface IncomingContext {
 }
 
 export const createContext = (ctx: IncomingContext): Context => {
-    // let userId: number
+    const { JWT_SECRET } = process.env;
     const {req, res} = ctx;
     const authorization = req?.headers?.authorization ?? "";
+
+    assert(JWT_SECRET, 'Missing JWT_SECRET environment variable');
     
     // console.log(req.cookies);
 
     // console.log(`Authorization: ${authorization}`);
 
-    // const token = authorization.replace('Bearer ', '')
-
-    // assert(JWT_SECRET, 'Missing JWT_SECRET environment variable');
+    const tokenStr = authorization.replace('Bearer ', '')
+    let token: UserToken | null
+    try { 
+      token = verify(tokenStr, JWT_SECRET) as UserToken
+    } catch (error) {
+      if (error instanceof TokenExpiredError) {
+        throw new AuthenticationError('Token is expired');
+      }
+      else if (error instanceof JsonWebTokenError) {
+        throw new AuthenticationError('Error parsing token');
+      }
+      else if (error instanceof NotBeforeError) {
+        throw new AuthenticationError('Token not yet valid');
+      } else {
+      }
+      token = null
+    }
     
     // const verifiedToken = verify(token, JWT_SECRET) as Token
 
@@ -62,6 +82,6 @@ export const createContext = (ctx: IncomingContext): Context => {
     return {
         ...ctx,
         prisma,
-        userId: "test-hello-world"
+        token
     }
 }
