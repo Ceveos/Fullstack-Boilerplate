@@ -7,4 +7,4 @@ module.exports = {
   eslint: {
     dirs: ['graphql', 'pages', 'components', 'lib']
   }
-}
+};
