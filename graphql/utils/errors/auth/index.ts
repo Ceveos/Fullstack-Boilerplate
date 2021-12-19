@@ -1,1 +1,1 @@
-export * from './loginInvalid'
+export * from './loginInvalid';

@@ -10,30 +10,30 @@ import { UserToken } from './userToken';
 import { assert } from '../utils/assert';
 
 export const Users = objectType({
-    name: NexusPrisma.User.$name,
-    description: NexusPrisma.User.$description,
-    definition(t) {
-      t.field(NexusPrisma.User.id)
-      t.field(NexusPrisma.User.name)
-      t.field(NexusPrisma.User.avatar)
-      t.field(NexusPrisma.User.email)
-      t.field(NexusPrisma.User.profile)
-      // t.list.field('posts', {
-      //   type: 'Post',
-      //   resolve: (parent) =>
-      //     prisma.user
-      //       .findUnique({
-      //         where: { id: parent.id },
-      //       })
-      //       .posts(),
-      // })
-    },
-  });
+  name: NexusPrisma.User.$name,
+  description: NexusPrisma.User.$description,
+  definition(t) {
+    t.field(NexusPrisma.User.id);
+    t.field(NexusPrisma.User.name);
+    t.field(NexusPrisma.User.avatar);
+    t.field(NexusPrisma.User.email);
+    t.field(NexusPrisma.User.profile);
+    // t.list.field('posts', {
+    //   type: 'Post',
+    //   resolve: (parent) =>
+    //     prisma.user
+    //       .findUnique({
+    //         where: { id: parent.id },
+    //       })
+    //       .posts(),
+    // })
+  },
+});
 
 export async function GetUserByEmail(email: string): Promise<Prisma.User | null> {
   return await prisma.user.findUnique({
     where: {
-        email
+      email
     }
   });
 }
@@ -52,13 +52,13 @@ export async function CreateRefreshTokenForUser(user: Prisma.User): Promise<Pris
   var expiration = new Date();
   expiration.setDate(expiration.getDate() + 14);
   return await prisma.refreshToken.create({
-      data: {
-          expiration,
-          hash,
-          label: "Login",
-          userId: user.id,
-      }
-  })
+    data: {
+      expiration,
+      hash,
+      label: 'Login',
+      userId: user.id,
+    }
+  });
 }
 
 export function CreateJWTForUser(user: Prisma.User): string {
@@ -67,8 +67,8 @@ export function CreateJWTForUser(user: Prisma.User): string {
 
   const token: UserToken = {
     userId: user.id
-  }
+  };
   return sign(token, JWT_SECRET, {
-    expiresIn: "10m"
+    expiresIn: '10m'
   });
 }

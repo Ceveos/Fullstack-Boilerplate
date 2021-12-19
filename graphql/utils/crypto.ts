@@ -1,4 +1,4 @@
-import * as argon2 from "argon2";
+import * as argon2 from 'argon2';
 
 const { HASH_SECRET } = process.env;
 
@@ -10,7 +10,7 @@ export async function hashPassword(password: string): Promise<string> {
   // Return hashed password
   // Argon2 is the recommended hashing algorithm for passwords.
   // Argon2's hashing algorithm generates a salt
-  return await argon2.hash(`${HASH_SECRET}${password}`)
+  return await argon2.hash(`${HASH_SECRET}${password}`);
 }
 
 /**
@@ -19,5 +19,5 @@ export async function hashPassword(password: string): Promise<string> {
  * @param hash Hashed password to compare against
  */
 export async function verifyPassword(password: string, hash: string) {
-    return await argon2.verify(hash, `${HASH_SECRET}${password}`)
+  return await argon2.verify(hash, `${HASH_SECRET}${password}`);
 }
