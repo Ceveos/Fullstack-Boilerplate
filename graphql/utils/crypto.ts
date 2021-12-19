@@ -2,7 +2,6 @@ import * as argon2 from "argon2";
 
 const { HASH_SECRET } = process.env;
 
-
 /**
  * Returns a hash given a password
  * @param password Password to hash
@@ -19,6 +18,6 @@ export async function hashPassword(password: string): Promise<string> {
  * @param password Plaintext password to verify
  * @param hash Hashed password to compare against
  */
-export async function verifyPassword(password: string, hash: string) { 
+export async function verifyPassword(password: string, hash: string) {
     return await argon2.verify(hash, `${HASH_SECRET}${password}`)
 }

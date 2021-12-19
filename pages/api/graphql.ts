@@ -25,7 +25,7 @@ const complexityPlugin: PluginDefinition = {
         async didResolveOperation({request, document}: GraphQLRequestContext<BaseContext>): Promise<void> {
             const complexity = getComplexity({
                 schema,
-                query: request.operationName ? 
+                query: request.operationName ?
                     separateOperations(document!)[request.operationName] :
                     document!,
                 variables: request.variables,
@@ -44,14 +44,13 @@ const complexityPlugin: PluginDefinition = {
     },
   };
 
-  
 const apolloServer = new ApolloServer({
    schema: schemaWithMiddleware,
    context: createContext,
    validationRules: [
        depthLimit(3)
     ],
-    plugins: [ 
+    plugins: [
         complexityPlugin,
     ]
   });
@@ -94,7 +93,6 @@ const handler: NextApiHandler = async (req, res) => {
   // await runMiddleware(req, res, cors());
   return apolloServerHandler(req, res)
 }
-
 
 export default cors({
   allowCredentials: true,

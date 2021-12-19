@@ -30,7 +30,7 @@ export const Users = objectType({
     },
   });
 
-export async function GetUserByEmail(email: string): Promise<Prisma.User | null> { 
+export async function GetUserByEmail(email: string): Promise<Prisma.User | null> {
   return await prisma.user.findUnique({
     where: {
         email

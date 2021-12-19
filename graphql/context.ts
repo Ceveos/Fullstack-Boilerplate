@@ -14,16 +14,15 @@ export interface Context {
   token: UserToken | null
 }
 
-
 export const tokens = {
     access: {
       name: 'ACCESS_TOKEN',
       expiry: '1d',
     },
   }
-  
-export function getIpAddress(ctx: Context): string { 
-  const ip = (ctx.req.headers['x-forwarded-for'] as string)?.split(',').shift() || 
+
+export function getIpAddress(ctx: Context): string {
+  const ip = (ctx.req.headers['x-forwarded-for'] as string)?.split(',').shift() ||
   ctx.req.socket.remoteAddress!
   return ip;
 }
@@ -51,14 +50,14 @@ export const createContext = (ctx: IncomingContext): Context => {
     const authorization = req?.headers?.authorization ?? "";
 
     assert(JWT_SECRET, 'Missing JWT_SECRET environment variable');
-    
+
     // console.log(req.cookies);
 
     // console.log(`Authorization: ${authorization}`);
 
     const tokenStr = authorization.replace('Bearer ', '')
     let token: UserToken | null
-    try { 
+    try {
       token = verify(tokenStr, JWT_SECRET) as UserToken
     } catch (error) {
       if (error instanceof TokenExpiredError) {
@@ -73,7 +72,7 @@ export const createContext = (ctx: IncomingContext): Context => {
       }
       token = null
     }
-    
+
     // const verifiedToken = verify(token, JWT_SECRET) as Token
 
     // if (!verifiedToken.userId && verifiedToken.type !== tokens.access.name)

@@ -1,6 +1,5 @@
 import { serialize } from 'cookie';
 import {mutationField, nonNull, stringArg} from 'nexus';
-import { sign, verify } from 'jsonwebtoken'
 import { hashPassword } from '../../utils/crypto';
 import LoginInvalidError from '../../utils/errors/auth/loginInvalid';
 import { CreateJWTForUser, CreateRefreshTokenForUser, GetUserByEmail, ValidateUserCredentials } from '../../models';
@@ -34,7 +33,7 @@ export const signupUser = mutationField('signupUser', {
         })
     },
 })
-  
+
 export const userLogin = mutationField('userLogin', {
     type: 'AuthPayload',
     args: {
@@ -60,10 +59,10 @@ export const userLogin = mutationField('userLogin', {
 
         console.log(cookieStr);
         ctx.res.setHeader('Set-Cookie', cookieStr);
-      
+
         return {
             token,
             user
-        } 
+        }
     },
 })
