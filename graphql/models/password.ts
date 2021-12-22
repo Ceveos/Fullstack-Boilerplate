@@ -1,9 +1,9 @@
 import * as Prisma from '@prisma/client';
 import * as NexusPrisma from 'nexus-prisma';
-import { prisma } from '../../db';
+import { Context } from '../context';
 
-export async function GetUserPassword(user: Prisma.User): Promise<Prisma.UserPassword | null> {
-  return await prisma.userPassword.findUnique({
+export async function GetUserPassword(ctx: Context, user: Prisma.User): Promise<Prisma.UserPassword | null> {
+  return await ctx.prisma.userPassword.findUnique({
     where: {
       id: user.id
     }
