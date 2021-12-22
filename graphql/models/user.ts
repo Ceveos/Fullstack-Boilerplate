@@ -51,7 +51,7 @@ export async function ValidateUserCredentials(ctx: Context, user: Prisma.User, p
 
 export async function CreateUser(ctx: Context, userParam: UserParam, password: string): Promise<Prisma.User> {
   const hashedPassword = await hashPassword(password);
-  return ctx.prisma.user.create({
+  return await ctx.prisma.user.create({
     data: {
       ...userParam,
       password: {

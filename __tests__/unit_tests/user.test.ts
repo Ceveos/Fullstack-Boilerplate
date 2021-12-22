@@ -1,7 +1,5 @@
-import * as Prisma from '@prisma/client';
 import { Context, MockContext, createMockContext } from '../../graphql/context';
 import { CreateUser, UserParam } from '../../graphql/models';
-import { createUser } from '../../graphql/resolvers';
 
 let mockCtx: MockContext;
 let ctx: Context;
@@ -17,7 +15,6 @@ test('should create new user ', async () => {
     email: 'hello@prisma.io',
     avatar: null
   };
-  //   mockCtx.prisma.user.create.mockResolvedValue(user);
 
   await expect(CreateUser(ctx, user, 'test')).resolves.toEqual({
     id: 1,
