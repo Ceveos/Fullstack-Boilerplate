@@ -9,8 +9,8 @@
     "prepare": "husky install",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
-    "test": "jest",
-    "test-jest": "npm run docker:up && npx prisma migrate deploy && jest -i && npm run docker:down"
+    "test-old": "jest",
+    "test": "npm run docker:up && dotenv -e .env.test -- npx prisma db push && jest -i && npm run docker:down"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
