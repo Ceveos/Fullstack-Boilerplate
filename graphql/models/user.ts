@@ -1,13 +1,13 @@
 import { objectType } from 'nexus';
 import * as Prisma from '@prisma/client';
 import * as NexusPrisma from 'nexus-prisma';
-import { prisma } from '../../db';
-import { verifyPassword } from '../utils/crypto';
+import { hashPassword, verifyPassword } from '../utils/crypto';
 import { GetUserPassword } from './password';
-import cryptoRandomString from 'crypto-random-string';
 import { sign } from 'jsonwebtoken';
 import { UserToken } from './userToken';
 import { assert } from '../utils/assert';
+import { Context } from '../context';
+import srs from 'secure-random-string';
 
 export const Users = objectType({
   name: NexusPrisma.User.$name,
@@ -30,16 +30,18 @@ export const Users = objectType({
   },
 });
 
-export async function GetUserByEmail(email: string): Promise<Prisma.User | null> {
-  return await prisma.user.findUnique({
+export type UserParam = Pick<Prisma.User, 'avatar' | 'email' | 'name'>
+
+export async function GetUserByEmail(ctx: Context, email: string): Promise<Prisma.User | null> {
+  return await ctx.prisma.user.findUnique({
     where: {
       email
     }
   });
 }
 
-export async function ValidateUserCredentials(user: Prisma.User, password: string): Promise<boolean> {
-  const userPassword = await GetUserPassword(user);
+export async function ValidateUserCredentials(ctx: Context, user: Prisma.User, password: string): Promise<boolean> {
+  const userPassword = await GetUserPassword(ctx, user);
   if (userPassword == null) {
     return false;
   }
@@ -47,11 +49,29 @@ export async function ValidateUserCredentials(user: Prisma.User, password: strin
   return await verifyPassword(password, userPassword.password);
 }
 
-export async function CreateRefreshTokenForUser(user: Prisma.User): Promise<Prisma.RefreshToken> {
-  let hash = cryptoRandomString({length: 100, type: 'base64'});
+export async function CreateUser(ctx: Context, userParam: UserParam, password: string): Promise<Prisma.User> {
+  const hashedPassword = await hashPassword(password);
+  return await ctx.prisma.user.create({
+    data: {
+      ...userParam,
+      password: {
+        create: {
+          password: hashedPassword,
+          forceChange: false
+        }
+      }
+    },
+    include: {
+      password: true
+    }
+  });
+}
+
+export async function CreateRefreshTokenForUser(ctx: Context, user: Prisma.User): Promise<Prisma.RefreshToken> {
+  let hash = srs({length: 100});
   var expiration = new Date();
   expiration.setDate(expiration.getDate() + 14);
-  return await prisma.refreshToken.create({
+  return await ctx.prisma.refreshToken.create({
     data: {
       expiration,
       hash,

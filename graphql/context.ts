@@ -6,12 +6,18 @@ import { IncomingMessage, ServerResponse } from 'http';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { UserToken } from './models/userToken';
 import { AuthenticationError } from 'apollo-server-micro';
+import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
 
-export interface Context {
+export type Context = {
   req: IncomingMessage;
   res: ServerResponse;
-  prisma: PrismaClient
-  token: UserToken | null
+  prisma: PrismaClient;
+  token: UserToken | null;
+}
+
+export type MockContext = {
+  prisma: DeepMockProxy<PrismaClient>;
+  token: UserToken | null;
 }
 
 export const tokens = {
@@ -43,6 +49,13 @@ interface IncomingContext {
   req: NextApiRequest// IncomingMessage;
   res: NextApiResponse// ServerResponse;
 }
+
+export const createMockContext = (): MockContext => {
+  return {
+    prisma: mockDeep<PrismaClient>(),
+    token: null
+  };
+};
 
 export const createContext = (ctx: IncomingContext): Context => {
   const { JWT_SECRET } = process.env;

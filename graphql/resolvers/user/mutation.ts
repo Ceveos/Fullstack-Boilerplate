@@ -1,11 +1,10 @@
 import { serialize } from 'cookie';
 import {mutationField, nonNull, stringArg} from 'nexus';
-import { hashPassword } from '../../utils/crypto';
 import LoginInvalidError from '../../utils/errors/auth/loginInvalid';
-import { CreateJWTForUser, CreateRefreshTokenForUser, GetUserByEmail, ValidateUserCredentials } from '../../models';
+import { CreateJWTForUser, CreateRefreshTokenForUser, CreateUser, GetUserByEmail, UserParam, ValidateUserCredentials } from '../../models';
 
 // When a user signs up proper (email + password)
-export const signupUser = mutationField('signupUser', {
+export const createUser = mutationField('signupUser', {
   type: 'User',
   args: {
     name: stringArg(),
@@ -14,23 +13,12 @@ export const signupUser = mutationField('signupUser', {
     avatar: stringArg(),
   },
   resolve: async (_, { name, email, password, avatar }, ctx) => {
-    const hashedPassword = await hashPassword(password);
-    return ctx.prisma.user.create({
-      data: {
-        name: name ?? email,
-        avatar,
-        email,
-        password: {
-          create: {
-            password: hashedPassword,
-            forceChange: false
-          }
-        }
-      },
-      include: {
-        password: true
-      }
-    });
+    const userParam: UserParam = {
+      avatar,
+      email,
+      name: name ?? email
+    };
+    return await CreateUser(ctx, userParam, password);
   },
 });
 
@@ -41,13 +29,13 @@ export const userLogin = mutationField('userLogin', {
     password: nonNull(stringArg()),
   },
   resolve: async (_, { email, password }, ctx) => {
-    const user = await GetUserByEmail(email);
+    const user = await GetUserByEmail(ctx, email);
 
-    if (user == null || !(await ValidateUserCredentials(user, password))) {
+    if (user == null || !(await ValidateUserCredentials(ctx, user, password))) {
       throw new LoginInvalidError('Invalid username or password');
     }
 
-    const refreshToken = await CreateRefreshTokenForUser(user);
+    const refreshToken = await CreateRefreshTokenForUser(ctx, user);
     const token = CreateJWTForUser(user);
 
     const cookieStr = serialize('refresh_token', refreshToken.hash, {
