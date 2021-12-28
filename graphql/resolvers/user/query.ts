@@ -5,7 +5,6 @@ export const getUser = queryField('user', {
   args: {
     userId: nonNull(stringArg()),
   },
-  complexity: 1,
   resolve: (_, args, ctx) => {
     return ctx.prisma.user.findUnique({
       where: { id: args.userId },
