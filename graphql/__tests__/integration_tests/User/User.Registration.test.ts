@@ -1,22 +1,9 @@
+import { ClearDatabase, prisma } from '../../../../db';
 import { Context } from '../../../context';
 import { CreateUser, UserParam } from '../../../models';
-import { prisma } from '../../../../db';
 
 beforeAll(async () => {
-  const tablenames =
-    await prisma.$queryRaw<Array<{ tablename: string }>>`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
-
-  for (const { tablename } of tablenames) {
-    if (tablename !== '_prisma_migrations') {
-      try {
-        await prisma.$executeRawUnsafe(`TRUNCATE TABLE "public"."${tablename}" CASCADE;`);
-      } catch (error) {
-        console.log({ error });
-      }
-    }
-  }
-
-  await prisma.$disconnect();
+  await ClearDatabase();
 });
 
 const ctx: Context = {
@@ -26,8 +13,13 @@ const ctx: Context = {
   token: null
 };
 const userParam: UserParam = {
-  name:   'Rich',
-  email:  'hello@prisma.io',
+  name:   'test',
+  email:  'test@email.com',
+  avatar: null
+};
+const anotherUserParam: UserParam = {
+  name:   'test 2',
+  email:  'test2@email.com',
   avatar: null
 };
 const password = 'test';
@@ -51,10 +43,12 @@ describe('User Registration', () => {
   });
 
   it('should error when creating existing user', async () => {
-    // // Expect user when initially registering account
-    // await expect(CreateUser(ctx, userParam, password)).resolves.toBeDefined();
-
     // Expect error to be thrown when re-creating user
     await expect(CreateUser(ctx, userParam, password)).rejects.toThrowError();
+  });
+
+  it('should allow creation of a second, different user', async () => {
+    // Expect error to be thrown when re-creating user
+    await expect(CreateUser(ctx, anotherUserParam, password)).resolves.toMatchObject(anotherUserParam);
   });
 });

@@ -8,9 +8,10 @@ const createJestConfig = nextJest({
 // Add any custom config to be passed to Jest
 const customJestConfig = {
   // if using TypeScript with a baseUrl set to the root directory then you need the below for alias' to work
-  transform: {
-    "^.+\\.(t|j)sx?$": "ts-jest",
-  },
+  // transform: {
+  //   '^.+\\.(t|j)sx?$': 'ts-jest',
+  // },
+  // testEnvironment: 'jest-environment-jsdom',
   // transformIgnorePatterns: ['node_modules/(?!(nexus|crypto-random-string)/)'],
 };
 

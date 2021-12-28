@@ -10,7 +10,10 @@
             "cwd": "${workspaceFolder}",
             "runtimeExecutable": "yarn",
             "args": [
-                "test:live",
+                "env-cmd",
+                "-f",
+                ".env.test",
+                "jest",
                 "--runInBand",
                 "--watchAll=false"
             ]
@@ -25,7 +28,10 @@
             "cwd": "${workspaceFolder}",
             "runtimeExecutable": "yarn",
             "args": [
-                "test:live",
+                "env-cmd",
+                "-f",
+                ".env.test",
+                "jest",
                 "--runInBand",
                 "--watchAll=false"
             ]

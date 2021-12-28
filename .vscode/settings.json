@@ -6,5 +6,5 @@
         "javascript",
         "typescript"
     ],
-    "jest.jestCommandLine": "yarn test:live"
+    "jest.jestCommandLine": "yarn env-cmd -f .env.test jest"
 }
