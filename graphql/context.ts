@@ -1,12 +1,12 @@
+import { AuthenticationError } from 'apollo-server-micro';
+import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
+import { IncomingMessage, ServerResponse } from 'http';
+import { JsonWebTokenError, NotBeforeError, TokenExpiredError, sign, verify } from 'jsonwebtoken';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
-import { JsonWebTokenError, NotBeforeError, sign, TokenExpiredError, verify } from 'jsonwebtoken';
+import { UserToken } from './models/userToken';
 import { assert } from './utils/assert';
 import { prisma } from '../db';
-import { IncomingMessage, ServerResponse } from 'http';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { UserToken } from './models/userToken';
-import { AuthenticationError } from 'apollo-server-micro';
-import { mockDeep, DeepMockProxy } from 'jest-mock-extended';
 
 export type Context = {
   req: IncomingMessage;
@@ -22,7 +22,7 @@ export type MockContext = {
 
 export const tokens = {
   access: {
-    name: 'ACCESS_TOKEN',
+    name:   'ACCESS_TOKEN',
     expiry: '1d',
   },
 };
@@ -36,7 +36,7 @@ export function getIpAddress(ctx: Context): string {
 export function userIdentifier(ctx: Context): string {
   const ip = getIpAddress(ctx);
   console.log(`IP Address: ${ip} | user id: ${ctx.token?.userId}`);
-  return  ctx.token?.userId ?? ip;
+  return ctx.token?.userId ?? ip;
 }
 
 export interface Token {
@@ -53,7 +53,7 @@ interface IncomingContext {
 export const createMockContext = (): MockContext => {
   return {
     prisma: mockDeep<PrismaClient>(),
-    token: null
+    token:  null
   };
 };
 

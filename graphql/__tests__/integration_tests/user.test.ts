@@ -1,6 +1,6 @@
-import { prisma } from '../../../db';
 import { Context } from '../../context';
 import { CreateUser, UserParam } from '../../models';
+import { prisma } from '../../../db';
 
 // beforeAll(async () => {
 //   // create product categories
@@ -70,15 +70,15 @@ afterAll(async () => {
 
 it('should create user when registered', async () => {
   // The new customers details
-  const user: UserParam  = {
-    name: 'Rich',
-    email: 'hello@prisma.io',
+  const user: UserParam = {
+    name:   'Rich',
+    email:  'hello@prisma.io',
     avatar: null
   };
   const ctx: Context = {
     prisma,
-    req: {} as unknown as any,
-    res: {} as unknown as any,
+    req:   {} as unknown as any,
+    res:   {} as unknown as any,
     token: null
   };
 

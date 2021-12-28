@@ -1,3 +1,4 @@
+import * as types from './types';
 import {
   connectionPlugin,
   fieldAuthorizePlugin,
@@ -6,7 +7,6 @@ import {
   queryComplexityPlugin,
 } from 'nexus';
 import { join } from 'path';
-import * as types from './types';
 
 const guardPlugin = nullabilityGuardPlugin({
   onGuarded({ ctx, info }) {
@@ -19,11 +19,11 @@ const guardPlugin = nullabilityGuardPlugin({
   // is seen in a position it shouldn't be. These can also be provided as a config property
   // for the `objectType` / `enumType` definition, as seen below.
   fallbackValues: {
-    Int: () => 0,
-    String: () => '',
-    ID: ({ info }) => `${info.parentType.name}:N/A`,
+    Int:     () => 0,
+    String:  () => '',
+    ID:      ({ info }) => `${info.parentType.name}:N/A`,
     Boolean: () => false,
-    Float: () => 0,
+    Float:   () => 0,
   },
 });
 

@@ -1,16 +1,16 @@
-import { serialize } from 'cookie';
-import {mutationField, nonNull, stringArg} from 'nexus';
-import LoginInvalidError from '../../utils/errors/auth/loginInvalid';
 import { CreateJWTForUser, CreateRefreshTokenForUser, CreateUser, GetUserByEmail, UserParam, ValidateUserCredentials } from '../../models';
+import {mutationField, nonNull, stringArg} from 'nexus';
+import { serialize } from 'cookie';
+import LoginInvalidError from '../../utils/errors/auth/loginInvalid';
 
 // When a user signs up proper (email + password)
 export const createUser = mutationField('signupUser', {
   type: 'User',
   args: {
-    name: stringArg(),
-    email: nonNull(stringArg()),
+    name:     stringArg(),
+    email:    nonNull(stringArg()),
     password: nonNull(stringArg()),
-    avatar: stringArg(),
+    avatar:   stringArg(),
   },
   resolve: async (_, { name, email, password, avatar }, ctx) => {
     const userParam: UserParam = {
@@ -25,7 +25,7 @@ export const createUser = mutationField('signupUser', {
 export const userLogin = mutationField('userLogin', {
   type: 'AuthPayload',
   args: {
-    email: nonNull(stringArg()),
+    email:    nonNull(stringArg()),
     password: nonNull(stringArg()),
   },
   resolve: async (_, { email, password }, ctx) => {
@@ -41,8 +41,8 @@ export const userLogin = mutationField('userLogin', {
     const cookieStr = serialize('refresh_token', refreshToken.hash, {
       httpOnly: true,
       sameSite: 'none',
-      secure: true,
-      maxAge: 60 * 60 * 24 * 7 * 2 // 2 weeks
+      secure:   true,
+      maxAge:   60 * 60 * 24 * 7 * 2 // 2 weeks
     });
 
     console.log(cookieStr);
