@@ -6,6 +6,12 @@ beforeAll(async () => {
   await ClearDatabase();
 });
 
+afterEach(async () => {
+  await prisma.userPassword.deleteMany({where: {}});
+  await prisma.profile.deleteMany({where: {}});
+  await prisma.user.deleteMany({where: {}});
+});
+
 const ctx: Context = {
   prisma,
   req:   {} as unknown as any,
@@ -44,6 +50,11 @@ describe('User Registration', () => {
 
   it('should error when creating existing user', async () => {
     // Expect error to be thrown when re-creating user
+    try {
+      await CreateUser(ctx, userParam, password);
+    } catch {
+      throw new Error('Unable to create initial user');
+    }
     await expect(CreateUser(ctx, userParam, password)).rejects.toThrowError();
   });
 
