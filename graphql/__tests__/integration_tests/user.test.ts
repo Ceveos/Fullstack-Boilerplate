@@ -1,6 +1,6 @@
-import { prisma } from '../../db';
-import { Context } from '../../graphql/context';
-import { CreateUser, UserParam } from '../../graphql/models';
+import { prisma } from '../../../db';
+import { Context } from '../../context';
+import { CreateUser, UserParam } from '../../models';
 
 // beforeAll(async () => {
 //   // create product categories

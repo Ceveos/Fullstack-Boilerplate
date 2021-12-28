@@ -1,7 +1,5 @@
-import * as Prisma from '@prisma/client';
 import { serialize } from 'cookie';
 import {mutationField, nonNull, stringArg} from 'nexus';
-import { hashPassword } from '../../utils/crypto';
 import LoginInvalidError from '../../utils/errors/auth/loginInvalid';
 import { CreateJWTForUser, CreateRefreshTokenForUser, CreateUser, GetUserByEmail, UserParam, ValidateUserCredentials } from '../../models';
 
