@@ -1,6 +1,6 @@
 import * as NexusPrisma from 'nexus-prisma';
 import { objectType } from 'nexus';
-import { prisma } from '../../db';
+import { prisma } from 'db';
 
 export const Profile = objectType({
   name: NexusPrisma.Profile.$name,

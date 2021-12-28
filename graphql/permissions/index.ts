@@ -1,4 +1,4 @@
-import { Context, userIdentifier } from '../context';
+import { Context, userIdentifier } from 'graphql/context';
 import { allow, not, shield } from 'graphql-shield';
 import { createRateLimitRule } from 'graphql-rate-limit';
 import { isAuthenticatedUser } from './rules/isAuthenticatedUser';
