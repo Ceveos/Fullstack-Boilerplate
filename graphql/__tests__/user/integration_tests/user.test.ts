@@ -1,6 +1,6 @@
-import { Context } from '../../context';
-import { CreateUser, UserParam } from '../../models';
-import { prisma } from '../../../db';
+import { Context } from '../../../context';
+import { CreateUser, UserParam } from '../../../models';
+import { prisma } from '../../../../db';
 
 // beforeAll(async () => {
 //   // create product categories
@@ -44,7 +44,7 @@ import { prisma } from '../../../db';
 //   console.log('✨ 1 customer successfully created!')
 // })
 
-afterAll(async () => {
+beforeAll(async () => {
   const tablenames =
     await prisma.$queryRaw<Array<{ tablename: string }>>`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
 
@@ -61,21 +61,23 @@ afterAll(async () => {
   await prisma.$disconnect();
 });
 
-it('should create user when registered', async () => {
-  // The new customers details
-  const user: UserParam = {
-    name:   'Rich',
-    email:  'hello@prisma.io',
-    avatar: null
-  };
-  const ctx: Context = {
-    prisma,
-    req:   {} as unknown as any,
-    res:   {} as unknown as any,
-    token: null
-  };
+const ctx: Context = {
+  prisma,
+  req:   {} as unknown as any,
+  res:   {} as unknown as any,
+  token: null
+};
+const userParam: UserParam = {
+  name:   'Rich',
+  email:  'hello@prisma.io',
+  avatar: null
+};
+const password = 'test';
 
-  await CreateUser(ctx, user, 'test');
+it('should create user when registered', async () => {
+  const user = await CreateUser(ctx, userParam, password);
+
+  expect(user).toBeDefined();
 
   // Check if the new customer was created by filtering on unique email field
   const newUser = await prisma.user.findUnique({
@@ -85,6 +87,14 @@ it('should create user when registered', async () => {
   });
 
   expect(newUser).toBeDefined();
-  expect(newUser?.email).toEqual(user.email);
+  expect(newUser).toMatchObject(userParam);
+  expect(user).toMatchObject(newUser!);
+});
 
+it('should error when creating existing user', async () => {
+  // // Expect user when initially registering account
+  // await expect(CreateUser(ctx, userParam, password)).resolves.toBeDefined();
+
+  // Expect error to be thrown when re-creating user
+  await expect(CreateUser(ctx, userParam, password)).rejects.toThrowError();
 });

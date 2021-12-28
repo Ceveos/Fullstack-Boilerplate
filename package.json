@@ -12,6 +12,7 @@
     "docker:down": "docker-compose down -v",
     "test:reset": "dotenv -e .env.test -- npx prisma migrate reset -f",
     "test:jest": "dotenv -e .env.test -- jest -i",
+    "test:live": "yarn test:reset && dotenv -e .env.test -- jest",
     "test": "yarn docker:up && yarn docker:wait && yarn test:reset && yarn test:jest && yarn docker:down"
   },
   "prisma": {

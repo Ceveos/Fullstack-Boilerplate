@@ -13,10 +13,10 @@ export const Users = objectType({
   name:        NexusPrisma.User.$name,
   description: NexusPrisma.User.$description,
   definition(t) {
-    t.field(NexusPrisma.User.id);
+    t.nonNull.field(NexusPrisma.User.id);
     t.field(NexusPrisma.User.name);
     t.field(NexusPrisma.User.avatar);
-    t.field(NexusPrisma.User.email);
+    t.nonNull.field(NexusPrisma.User.email);
     t.field(NexusPrisma.User.profile);
     // t.list.field('posts', {
     //   type: 'Post',
