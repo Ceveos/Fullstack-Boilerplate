@@ -14,18 +14,18 @@ afterEach(async () => {
 
 const ctx: Context = {
   prisma,
-  req:   {} as unknown as any,
-  res:   {} as unknown as any,
+  req: {} as unknown as any,
+  res: {} as unknown as any,
   token: null
 };
 const userParam: UserParam = {
-  name:   'test',
-  email:  'test@email.com',
+  name: 'test',
+  email: 'test@email.com',
   avatar: null
 };
 const anotherUserParam: UserParam = {
-  name:   'test 2',
-  email:  'test2@email.com',
+  name: 'test 2',
+  email: 'test2@email.com',
   avatar: null
 };
 const password = 'test';

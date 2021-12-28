@@ -13,15 +13,15 @@ beforeEach(() => {
 describe('User Registration', () => {
   it('should create new user', async () => {
     const userParam: UserParam = {
-      name:   'Rich',
-      email:  'hello@prisma.io',
+      name: 'Rich',
+      email: 'hello@prisma.io',
       avatar: null
     };
     const user: Prisma.User = {
       ...userParam,
       emailConfirmed: false,
-      id:             '1',
-      role:           'USER',
+      id: '1',
+      role: 'USER',
     };
 
     mockCtx.prisma.user.create.mockResolvedValue(user);

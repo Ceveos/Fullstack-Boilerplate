@@ -28,7 +28,7 @@ const complexityPlugin: PluginDefinition = {
           query: request.operationName ?
             separateOperations(document!)[request.operationName] :
                     document!,
-          variables:  request.variables,
+          variables: request.variables,
           estimators: [
             fieldExtensionsEstimator(),
             simpleEstimator({defaultComplexity: 1})
@@ -46,8 +46,8 @@ const complexityPlugin: PluginDefinition = {
 };
 
 const apolloServer = new ApolloServer({
-  schema:          schemaWithMiddleware,
-  context:         createContext,
+  schema: schemaWithMiddleware,
+  context: createContext,
   validationRules: [
     depthLimit(3)
   ],
@@ -97,5 +97,5 @@ const handler: NextApiHandler = async (req, res) => {
 
 export default cors({
   allowCredentials: true,
-  origin:           'https://studio.apollographql.com'
+  origin: 'https://studio.apollographql.com'
 })(handler as any);

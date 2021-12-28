@@ -22,7 +22,7 @@ export type MockContext = {
 
 export const tokens = {
   access: {
-    name:   'ACCESS_TOKEN',
+    name: 'ACCESS_TOKEN',
     expiry: '1d',
   },
 };
@@ -55,7 +55,7 @@ interface IncomingContext {
 export const createMockContext = (): MockContext => {
   return {
     prisma: mockDeep<PrismaClient>(),
-    token:  null
+    token: null
   };
 };
 

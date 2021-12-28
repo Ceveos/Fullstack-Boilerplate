@@ -10,7 +10,7 @@ import { sign } from 'jsonwebtoken';
 import srs from 'secure-random-string';
 
 export const Users = objectType({
-  name:        NexusPrisma.User.$name,
+  name: NexusPrisma.User.$name,
   description: NexusPrisma.User.$description,
   definition(t) {
     t.nonNull.field(NexusPrisma.User.id);
@@ -58,7 +58,7 @@ export async function CreateUser(ctx: Context, userParam: UserParam, password: s
       ...userParam,
       password: {
         create: {
-          password:    hashedPassword,
+          password: hashedPassword,
           forceChange: false
         }
       }
@@ -78,7 +78,7 @@ export async function CreateRefreshTokenForUser(ctx: Context, user: Prisma.User)
     data: {
       expiration,
       hash,
-      label:  'Login',
+      label: 'Login',
       userId: user.id,
     }
   });
