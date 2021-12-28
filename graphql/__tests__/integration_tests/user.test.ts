@@ -57,13 +57,6 @@ afterAll(async () => {
       }
     }
   }
-  // const deleteUserPasswords = prisma.userPassword.deleteMany();
-  // const deleteUsers = prisma.user.deleteMany();
-
-  // await prisma.$transaction([
-  //   deleteUserPasswords,
-  //   deleteUsers,
-  // ]);
 
   await prisma.$disconnect();
 });
@@ -90,6 +83,7 @@ it('should create user when registered', async () => {
       email: user.email!,
     },
   });
+
   expect(newUser).toBeDefined();
   expect(newUser?.email).toEqual(user.email);
 

@@ -42,6 +42,7 @@ export async function GetUserByEmail(ctx: Context, email: string): Promise<Prism
 
 export async function ValidateUserCredentials(ctx: Context, user: Prisma.User, password: string): Promise<boolean> {
   const userPassword = await GetUserPassword(ctx, user);
+
   if (userPassword == null) {
     return false;
   }
@@ -51,6 +52,7 @@ export async function ValidateUserCredentials(ctx: Context, user: Prisma.User, p
 
 export async function CreateUser(ctx: Context, userParam: UserParam, password: string): Promise<Prisma.User> {
   const hashedPassword = await hashPassword(password);
+
   return await ctx.prisma.user.create({
     data: {
       ...userParam,
@@ -70,6 +72,7 @@ export async function CreateUser(ctx: Context, userParam: UserParam, password: s
 export async function CreateRefreshTokenForUser(ctx: Context, user: Prisma.User): Promise<Prisma.RefreshToken> {
   let hash = srs({length: 100});
   var expiration = new Date();
+
   expiration.setDate(expiration.getDate() + 14);
   return await ctx.prisma.refreshToken.create({
     data: {
@@ -83,11 +86,13 @@ export async function CreateRefreshTokenForUser(ctx: Context, user: Prisma.User)
 
 export function CreateJWTForUser(user: Prisma.User): string {
   const { JWT_SECRET } = process.env;
+
   assert(JWT_SECRET, 'Missing JWT_SECRET environment variable');
 
   const token: UserToken = {
     userId: user.id
   };
+
   return sign(token, JWT_SECRET, {
     expiresIn: '10m'
   });

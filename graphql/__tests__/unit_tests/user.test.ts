@@ -22,6 +22,7 @@ test('should create new user', async () => {
     id:             '1',
     role:           'USER',
   };
+
   mockCtx.prisma.user.create.mockResolvedValue(user);
   await expect(CreateUser(ctx, user, 'test')).resolves.toMatchObject(user);
 });

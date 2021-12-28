@@ -18,6 +18,7 @@ export const createUser = mutationField('signupUser', {
       email,
       name: name ?? email
     };
+
     return await CreateUser(ctx, userParam, password);
   },
 });

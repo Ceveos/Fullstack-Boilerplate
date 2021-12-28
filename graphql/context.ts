@@ -30,11 +30,13 @@ export const tokens = {
 export function getIpAddress(ctx: Context): string {
   const ip = (ctx.req.headers['x-forwarded-for'] as string)?.split(',').shift() ||
   ctx.req.socket.remoteAddress!;
+
   return ip;
 }
 
 export function userIdentifier(ctx: Context): string {
   const ip = getIpAddress(ctx);
+
   console.log(`IP Address: ${ip} | user id: ${ctx.token?.userId}`);
   return ctx.token?.userId ?? ip;
 }
@@ -70,6 +72,7 @@ export const createContext = (ctx: IncomingContext): Context => {
 
   const tokenStr = authorization.replace('Bearer ', '');
   let token: UserToken | null;
+
   try {
     token = verify(tokenStr, JWT_SECRET) as UserToken;
   } catch (error) {

@@ -34,6 +34,7 @@ const complexityPlugin: PluginDefinition = {
             simpleEstimator({defaultComplexity: 1})
           ]
         });
+
         if (complexity >= 500) {
           throw new Error(
             `Complexity (${complexity}) is over the 500 maximum allowed.`,

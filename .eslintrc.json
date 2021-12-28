@@ -12,6 +12,7 @@
     "quotes": ["error", "single"],
     "semi": ["error", "always"],
     "indent": ["error", 2],
+    "newline-after-var": ["error", "always"],
     "sort-imports-es6-autofix/sort-imports-es6": [2, {
       "ignoreCase": false,
       "ignoreMemberSort": false,
