@@ -1,6 +1,6 @@
 import { ClearDatabase, prisma } from '../../../../db';
 import { Context } from '../../../context';
-import { CreateUser, UserParam } from '../../../models';
+import { CreateUser, UserParam, ValidateUserCredentials } from '../../../models';
 
 beforeAll(async () => {
   await ClearDatabase();
@@ -29,6 +29,7 @@ const anotherUserParam: UserParam = {
   avatar: null
 };
 const password = 'test';
+const fakePassword = 'fake';
 
 describe('User Registration', () => {
   it('should create user when registered', async () => {
@@ -49,17 +50,26 @@ describe('User Registration', () => {
   });
 
   it('should error when creating existing user', async () => {
-    // Expect error to be thrown when re-creating user
     try {
       await CreateUser(ctx, userParam, password);
     } catch {
       throw new Error('Unable to create initial user');
     }
+    // Expect error to be thrown when re-creating user
     await expect(CreateUser(ctx, userParam, password)).rejects.toThrowError();
   });
 
   it('should allow creation of a second, different user', async () => {
-    // Expect error to be thrown when re-creating user
+    // Expect two different accounts to be registered
+    await expect(CreateUser(ctx, userParam, password)).resolves.toMatchObject(userParam);
     await expect(CreateUser(ctx, anotherUserParam, password)).resolves.toMatchObject(anotherUserParam);
+  });
+
+  it('should create a user with a valid password', async () => {
+    // Expect user registration to contain valid password
+    const user = await CreateUser(ctx, userParam, password);
+
+    expect(await ValidateUserCredentials(ctx, user, password)).toBeTruthy();
+    expect(await ValidateUserCredentials(ctx, user, fakePassword)).toBeFalsy();
   });
 });
