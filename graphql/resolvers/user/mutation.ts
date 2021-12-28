@@ -14,7 +14,7 @@ export const createUser = mutationField('signupUser', {
   },
   resolve: async (_, { name, email, password, avatar }, ctx) => {
     const userParam: UserParam = {
-      avatar,
+      avatar: avatar ?? null,
       email,
       name: name ?? email
     };

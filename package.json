@@ -2,18 +2,19 @@
   "name": "portfolio",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint --fix",
+    "dev": "yarn generate && next dev",
+    "build": "yarn generate && next build",
+    "start": "yarn generate && next start",
+    "lint": "yarn generate && next lint --fix",
     "prepare": "husky install",
+    "generate": "npx prisma generate && npx ts-node --transpile-only -P nexus.tsconfig.json pages/api/graphql",
     "docker:up": "docker-compose up -d",
     "docker:wait": "./wait-for-it.sh -h localhost -p 5433 -t 0 && sleep 1",
     "docker:down": "docker-compose down -v",
     "test:reset": "env-cmd -f .env.test npx prisma migrate reset -f",
     "test:jest": "env-cmd -f .env.test jest -i",
-    "test:live": "yarn test:reset && env-cmd -f .env.test jest",
-    "test": "yarn docker:up && yarn docker:wait && yarn test:reset && yarn test:jest && yarn docker:down"
+    "test:live": "yarn test:reset && yarn generate && env-cmd -f .env.test jest",
+    "test": "yarn docker:up && yarn docker:wait && yarn generate && yarn test:reset && yarn test:jest"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"

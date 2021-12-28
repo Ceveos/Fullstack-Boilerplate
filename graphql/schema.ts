@@ -30,6 +30,7 @@ const guardPlugin = nullabilityGuardPlugin({
 export const schema = makeSchema({
   types,
   plugins: [
+    queryComplexityPlugin(),
     fieldAuthorizePlugin({
       formatError: (authConfig) => authConfig.error,
     }),
@@ -38,7 +39,6 @@ export const schema = makeSchema({
         return node.id;
       },
     }),
-    queryComplexityPlugin(),
     guardPlugin
   ],
   outputs: {
