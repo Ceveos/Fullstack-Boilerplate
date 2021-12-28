@@ -1,7 +1,7 @@
-import { serialize } from 'cookie';
-import {mutationField, nonNull, stringArg} from 'nexus';
-import LoginInvalidError from '../../utils/errors/auth/loginInvalid';
 import { CreateJWTForUser, CreateRefreshTokenForUser, CreateUser, GetUserByEmail, UserParam, ValidateUserCredentials } from '../../models';
+import {mutationField, nonNull, stringArg} from 'nexus';
+import { serialize } from 'cookie';
+import LoginInvalidError from '../../utils/errors/auth/loginInvalid';
 
 // When a user signs up proper (email + password)
 export const createUser = mutationField('signupUser', {
@@ -18,6 +18,7 @@ export const createUser = mutationField('signupUser', {
       email,
       name: name ?? email
     };
+
     return await CreateUser(ctx, userParam, password);
   },
 });

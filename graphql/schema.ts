@@ -1,3 +1,4 @@
+import * as types from './types';
 import {
   connectionPlugin,
   fieldAuthorizePlugin,
@@ -6,7 +7,6 @@ import {
   queryComplexityPlugin,
 } from 'nexus';
 import { join } from 'path';
-import * as types from './types';
 
 const guardPlugin = nullabilityGuardPlugin({
   onGuarded({ ctx, info }) {

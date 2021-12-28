@@ -4,9 +4,9 @@ const prisma = new PrismaClient();
 async function main() {
   await prisma.user.create({
     data: {
-      name: 'Alex',
+      name:  'Alex',
       email: 'alex@casasola.dev',
-      role: 'ADMIN'
+      role:  'ADMIN'
     },
   });
 }

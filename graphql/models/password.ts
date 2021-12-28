@@ -1,5 +1,5 @@
-import * as Prisma from '@prisma/client';
 import * as NexusPrisma from 'nexus-prisma';
+import * as Prisma from '@prisma/client';
 import { Context } from '../context';
 
 export async function GetUserPassword(ctx: Context, user: Prisma.User): Promise<Prisma.UserPassword | null> {

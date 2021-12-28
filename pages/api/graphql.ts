@@ -1,15 +1,15 @@
 import { ApolloServer } from 'apollo-server-micro';
+import { BaseContext } from 'next/dist/shared/lib/utils';
+import { GraphQLRequestContext, PluginDefinition } from 'apollo-server-core';
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 import { applyMiddleware } from 'graphql-middleware';
-import cors from 'micro-cors';
+import { createContext } from '../../graphql/context';
+import { fieldExtensionsEstimator, getComplexity, simpleEstimator } from 'graphql-query-complexity';
 import { permissions } from '../../graphql/permissions';
 import { schema } from '../../graphql/schema';
-import { createContext } from '../../graphql/context';
-import depthLimit from 'graphql-depth-limit';
-import { fieldExtensionsEstimator, getComplexity, simpleEstimator } from 'graphql-query-complexity';
 import { separateOperations } from 'graphql';
-import { GraphQLRequestContext, PluginDefinition } from 'apollo-server-core';
-import { BaseContext } from 'next/dist/shared/lib/utils';
+import cors from 'micro-cors';
+import depthLimit from 'graphql-depth-limit';
 
 export const config = {
   api: {
@@ -34,6 +34,7 @@ const complexityPlugin: PluginDefinition = {
             simpleEstimator({defaultComplexity: 1})
           ]
         });
+
         if (complexity >= 500) {
           throw new Error(
             `Complexity (${complexity}) is over the 500 maximum allowed.`,
