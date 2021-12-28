@@ -44,23 +44,29 @@ import { CreateUser, UserParam } from '../../graphql/models';
 //   console.log('✨ 1 customer successfully created!')
 // })
 
-// afterAll(async () => {
-//   const deleteOrderDetails = prisma.orderDetails.deleteMany()
-//   const deleteProduct = prisma.product.deleteMany()
-//   const deleteCategory = prisma.category.deleteMany()
-//   const deleteCustomerOrder = prisma.customerOrder.deleteMany()
-//   const deleteCustomer = prisma.customer.deleteMany()
+afterAll(async () => {
+  const tablenames =
+    await prisma.$queryRaw<Array<{ tablename: string }>>`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
 
-//   await prisma.$transaction([
-//     deleteOrderDetails,
-//     deleteProduct,
-//     deleteCategory,
-//     deleteCustomerOrder,
-//     deleteCustomer,
-//   ])
+  for (const { tablename } of tablenames) {
+    if (tablename !== '_prisma_migrations') {
+      try {
+        await prisma.$executeRawUnsafe(`TRUNCATE TABLE "public"."${tablename}" CASCADE;`);
+      } catch (error) {
+        console.log({ error });
+      }
+    }
+  }
+  // const deleteUserPasswords = prisma.userPassword.deleteMany();
+  // const deleteUsers = prisma.user.deleteMany();
 
-//   await prisma.$disconnect()
-// })
+  // await prisma.$transaction([
+  //   deleteUserPasswords,
+  //   deleteUsers,
+  // ]);
+
+  await prisma.$disconnect();
+});
 
 it('should create user when registered', async () => {
   // The new customers details
@@ -76,13 +82,7 @@ it('should create user when registered', async () => {
     token: null
   };
 
-  await prisma.user.create({
-    data: {
-      name: user.name,
-      email: user.email
-    }
-  });
-  //   await CreateUser(ctx, user, 'test');
+  await CreateUser(ctx, user, 'test');
 
   // Check if the new customer was created by filtering on unique email field
   const newUser = await prisma.user.findUnique({

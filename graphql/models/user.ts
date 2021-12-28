@@ -3,11 +3,11 @@ import * as Prisma from '@prisma/client';
 import * as NexusPrisma from 'nexus-prisma';
 import { hashPassword, verifyPassword } from '../utils/crypto';
 import { GetUserPassword } from './password';
-import cryptoRandomString from 'crypto-random-string';
 import { sign } from 'jsonwebtoken';
 import { UserToken } from './userToken';
 import { assert } from '../utils/assert';
 import { Context } from '../context';
+import srs from 'secure-random-string';
 
 export const Users = objectType({
   name: NexusPrisma.User.$name,
@@ -68,7 +68,7 @@ export async function CreateUser(ctx: Context, userParam: UserParam, password: s
 }
 
 export async function CreateRefreshTokenForUser(ctx: Context, user: Prisma.User): Promise<Prisma.RefreshToken> {
-  let hash = cryptoRandomString({length: 100, type: 'base64'});
+  let hash = srs({length: 100});
   var expiration = new Date();
   expiration.setDate(expiration.getDate() + 14);
   return await ctx.prisma.refreshToken.create({
