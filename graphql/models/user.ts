@@ -16,7 +16,7 @@ export const Users = objectType({
     t.nonNull.field(NexusPrisma.User.id);
     t.field(NexusPrisma.User.name);
     t.field(NexusPrisma.User.avatar);
-    t.nonNull.field(NexusPrisma.User.email);
+    t.field(NexusPrisma.User.email);
     t.field(NexusPrisma.User.profile);
     // t.list.field('posts', {
     //   type: 'Post',
