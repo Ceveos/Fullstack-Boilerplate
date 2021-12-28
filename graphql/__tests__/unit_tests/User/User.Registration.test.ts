@@ -1,6 +1,6 @@
 import * as Prisma from '@prisma/client';
-import { Context, MockContext, createMockContext } from '../../../context';
-import { CreateUser, UserParam } from '../../../models';
+import { Context, MockContext, createMockContext } from 'graphql/context';
+import { CreateUser, UserParam } from 'graphql/models';
 
 let mockCtx: MockContext;
 let ctx: Context;

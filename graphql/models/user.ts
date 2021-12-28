@@ -1,10 +1,10 @@
 import * as NexusPrisma from 'nexus-prisma';
 import * as Prisma from '@prisma/client';
-import { Context } from '../context';
+import { Context } from 'graphql/context';
 import { GetUserPassword } from './password';
 import { UserToken } from './userToken';
-import { assert } from '../utils/assert';
-import { hashPassword, verifyPassword } from '../utils/crypto';
+import { assert } from 'graphql/utils/assert';
+import { hashPassword, verifyPassword } from 'graphql/utils/crypto';
 import { objectType } from 'nexus';
 import { sign } from 'jsonwebtoken';
 import srs from 'secure-random-string';

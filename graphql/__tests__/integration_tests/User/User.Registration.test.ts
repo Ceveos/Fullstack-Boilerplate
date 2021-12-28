@@ -1,6 +1,6 @@
-import { ClearDatabase, prisma } from '../../../../db';
-import { Context } from '../../../context';
-import { CreateUser, UserParam, ValidateUserCredentials } from '../../../models';
+import { ClearDatabase, prisma } from 'db';
+import { Context } from 'graphql/context';
+import { CreateUser, UserParam, ValidateUserCredentials } from 'graphql/models';
 
 beforeAll(async () => {
   await ClearDatabase();

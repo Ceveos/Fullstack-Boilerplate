@@ -6,7 +6,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
 import { UserToken } from './models/userToken';
 import { assert } from './utils/assert';
-import { prisma } from '../db';
+import { prisma } from 'db';
 
 export type Context = {
   req: IncomingMessage;
