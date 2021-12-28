@@ -11,7 +11,9 @@ const customJestConfig = {
   // transform: {
   //   '^.+\\.(t|j)sx?$': 'ts-jest',
   // },
-  // testEnvironment: 'jest-environment-jsdom',
+  moduleDirectories: ['node_modules', '<rootDir>/'],
+  testEnvironment: 'jest-environment-jsdom',
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js']
   // transformIgnorePatterns: ['node_modules/(?!(nexus|crypto-random-string)/)'],
 };
 
