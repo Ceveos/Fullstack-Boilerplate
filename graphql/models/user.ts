@@ -2,12 +2,8 @@ import * as NexusPrisma from 'nexus-prisma';
 import * as Prisma from '@prisma/client';
 import { Context } from 'graphql/context';
 import { GetUserPassword } from './password';
-import { UserToken } from './userToken';
-import { assert } from 'graphql/utils/assert';
 import { hashPassword, verifyPassword } from 'graphql/utils/crypto';
 import { objectType } from 'nexus';
-import { sign } from 'jsonwebtoken';
-import srs from 'secure-random-string';
 
 export const Users = objectType({
   name: NexusPrisma.User.$name,
@@ -17,16 +13,7 @@ export const Users = objectType({
     t.field(NexusPrisma.User.name);
     t.field(NexusPrisma.User.avatar);
     t.field(NexusPrisma.User.email);
-    t.field(NexusPrisma.User.profile);
-    // t.list.field('posts', {
-    //   type: 'Post',
-    //   resolve: (parent) =>
-    //     prisma.user
-    //       .findUnique({
-    //         where: { id: parent.id },
-    //       })
-    //       .posts(),
-    // })
+    t.field(NexusPrisma.User.Profile);
   },
 });
 
@@ -47,7 +34,7 @@ export async function ValidateUserCredentials(ctx: Context, user: Prisma.User, p
     return false;
   }
 
-  return await verifyPassword(password, userPassword.password);
+  return await verifyPassword(password, userPassword.password) /* hashed password */;
 }
 
 export async function CreateUser(ctx: Context, userParam: UserParam, password: string): Promise<Prisma.User> {
@@ -56,7 +43,7 @@ export async function CreateUser(ctx: Context, userParam: UserParam, password: s
   return await ctx.prisma.user.create({
     data: {
       ...userParam,
-      password: {
+      Password: {
         create: {
           password: hashedPassword,
           forceChange: false
@@ -64,36 +51,7 @@ export async function CreateUser(ctx: Context, userParam: UserParam, password: s
       }
     },
     include: {
-      password: true
+      Password: true
     }
-  });
-}
-
-export async function CreateRefreshTokenForUser(ctx: Context, user: Prisma.User): Promise<Prisma.RefreshToken> {
-  let hash = srs({length: 100});
-  var expiration = new Date();
-
-  expiration.setDate(expiration.getDate() + 14);
-  return await ctx.prisma.refreshToken.create({
-    data: {
-      expiration,
-      hash,
-      label: 'Login',
-      userId: user.id,
-    }
-  });
-}
-
-export function CreateJWTForUser(user: Prisma.User): string {
-  const { JWT_SECRET } = process.env;
-
-  assert(JWT_SECRET, 'Missing JWT_SECRET environment variable');
-
-  const token: UserToken = {
-    userId: user.id
-  };
-
-  return sign(token, JWT_SECRET, {
-    expiresIn: '10m'
   });
 }

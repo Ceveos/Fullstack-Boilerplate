@@ -19,6 +19,7 @@ type Mutation {
 }
 
 type Profile {
+  User: User!
   bio: String
   id: ID!
   user: User
@@ -28,10 +29,17 @@ type Query {
   user(userId: String!): User
 }
 
+type RefreshToken {
+  User: User!
+  expiration: DateTime!
+  hash: String!
+  valid: Boolean!
+}
+
 type User {
+  Profile: Profile
   avatar: String
   email: String
   id: ID!
   name: String!
-  profile: Profile
 }

@@ -1,7 +1,7 @@
 import { ApolloServer } from 'apollo-server-micro';
 import { BaseContext } from 'next/dist/shared/lib/utils';
 import { GraphQLRequestContext, PluginDefinition } from 'apollo-server-core';
-import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
+import { NextApiHandler } from 'next';
 import { applyMiddleware } from 'graphql-middleware';
 import { createContext } from 'graphql/context';
 import { fieldExtensionsEstimator, getComplexity, simpleEstimator } from 'graphql-query-complexity';
@@ -48,6 +48,7 @@ const complexityPlugin: PluginDefinition = {
 const apolloServer = new ApolloServer({
   schema: schemaWithMiddleware,
   context: createContext,
+  introspection: true,
   validationRules: [
     depthLimit(3)
   ],

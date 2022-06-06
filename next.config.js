@@ -5,6 +5,6 @@ module.exports = {
     esmExternals: true
   },
   eslint: {
-    dirs: ['graphql', 'pages', 'components', 'lib']
+    dirs: ['graphql', 'pages', 'components', 'app', 'features', 'lib']
   }
 };
