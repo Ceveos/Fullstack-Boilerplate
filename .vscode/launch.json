@@ -1,40 +1,66 @@
 {
+    "version": "0.2.0",
     "configurations": [
-        {
-            "type": "node",
-            "name": "debug",
-            "request": "launch",
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen",
-            "disableOptimisticBPs": true,
-            "cwd": "${workspaceFolder}",
-            "runtimeExecutable": "yarn",
-            "args": [
-                "env-cmd",
-                "-f",
-                ".env.test",
-                "jest",
-                "--runInBand",
-                "--watchAll=false"
-            ]
-        },
-        {
-            "type": "node",
-            "name": "vscode-jest-tests",
-            "request": "launch",
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen",
-            "disableOptimisticBPs": true,
-            "cwd": "${workspaceFolder}",
-            "runtimeExecutable": "yarn",
-            "args": [
-                "env-cmd",
-                "-f",
-                ".env.test",
-                "jest",
-                "--runInBand",
-                "--watchAll=false"
-            ]
+      {
+        "name": "Next.js: debug server-side",
+        "type": "node-terminal",
+        "request": "launch",
+        "command": "npm run dev"
+      },
+      {
+        "name": "Next.js: debug client-side",
+        "type": "pwa-msedge",
+        "request": "launch",
+        "url": "http://localhost:3000"
+      },
+      {
+        "name": "Next.js: debug full stack",
+        "type": "node-terminal",
+        "request": "launch",
+        "command": "npm run dev",
+        "console": "integratedTerminal",
+        "serverReadyAction": {
+          "pattern": "started server on .+, url: (https?://.+)",
+          "uriFormat": "%s",
+          "action": "debugWithEdge"
         }
+      },
+      {
+        "type": "node",
+        "name": "debug",
+        "request": "launch",
+        "console": "integratedTerminal",
+        "internalConsoleOptions": "neverOpen",
+        "disableOptimisticBPs": true,
+        "cwd": "${workspaceFolder}",
+        "runtimeExecutable": "yarn",
+        "args": [
+          "env-cmd",
+          "-f",
+          ".env.test",
+          "jest",
+          "--runInBand",
+          "--watchAll=false"
+        ]
+      },
+      {
+        "type": "node",
+        "name": "vscode-jest-tests",
+        "request": "launch",
+        "console": "integratedTerminal",
+        "internalConsoleOptions": "neverOpen",
+        "disableOptimisticBPs": true,
+        "cwd": "${workspaceFolder}",
+        "runtimeExecutable": "yarn",
+        "args": [
+          "env-cmd",
+          "-f",
+          ".env.test",
+          "jest",
+          "--runInBand",
+          "--watchAll=false"
+        ]
+      }
     ]
-}
+  }
+  

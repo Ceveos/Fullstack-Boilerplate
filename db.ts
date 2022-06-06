@@ -18,7 +18,6 @@ export const prisma =
 if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
 
 export async function ClearDatabase() {
-
   if (process.env.APP_ENV !== 'test') {
     throw new Error('Tried to clear database on a non-test environment!');
   }

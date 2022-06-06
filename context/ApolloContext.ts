@@ -19,8 +19,8 @@ const REFRESH_TOKEN_MUTATION = gql`
         refreshJwt {
            token,
            user {
-             steamId
-             username
+             id,
+             email
            }
         }
     }

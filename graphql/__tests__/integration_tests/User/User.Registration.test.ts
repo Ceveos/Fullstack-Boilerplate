@@ -2,16 +2,6 @@ import { ClearDatabase, prisma } from 'db';
 import { Context } from 'graphql/context';
 import { CreateUser, UserParam, ValidateUserCredentials } from 'graphql/models';
 
-beforeAll(async () => {
-  await ClearDatabase();
-});
-
-afterEach(async () => {
-  await prisma.userPassword.deleteMany({where: {}});
-  await prisma.profile.deleteMany({where: {}});
-  await prisma.user.deleteMany({where: {}});
-});
-
 const ctx: Context = {
   prisma,
   req: {} as unknown as any,
@@ -32,6 +22,17 @@ const password = 'test';
 const fakePassword = 'fake';
 
 describe('User Registration', () => {
+
+  beforeAll(async () => {
+    await ClearDatabase();
+  });
+
+  afterEach(async () => {
+    await prisma.userPassword.deleteMany({where: {}});
+    await prisma.profile.deleteMany({where: {}});
+    await prisma.user.deleteMany({where: {}});
+  });
+
   it('should create user when registered', async () => {
     const user = await CreateUser(ctx, userParam, password);
 

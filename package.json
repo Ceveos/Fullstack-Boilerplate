@@ -14,7 +14,7 @@
     "docker:wait": "./wait-for-it.sh -h localhost -p 5433 -t 0 && sleep 1",
     "docker:down": "docker-compose -f docker-compose.test.yml down -v",
     "test:reset": "env-cmd -f .env.test npx prisma migrate reset -f",
-    "test:jest": "env-cmd -f .env.test jest -i",
+    "test:jest": "env-cmd -f .env.test jest -i --runInBand",
     "test:live": "yarn test:reset && yarn generate && env-cmd -f .env.test jest",
     "test": "yarn docker:up && yarn docker:wait && yarn generate && yarn test:reset && yarn test:jest"
   },

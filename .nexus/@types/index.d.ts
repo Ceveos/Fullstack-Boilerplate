@@ -94,6 +94,7 @@ export interface NexusGenFieldTypes {
     user: NexusGenRootTypes['User'] | null; // User
   }
   Mutation: { // field return type
+    refreshJwt: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
     signupUser: NexusGenRootTypes['User'] | null; // User
     userLogin: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
   }
@@ -127,6 +128,7 @@ export interface NexusGenFieldTypeNames {
     user: 'User'
   }
   Mutation: { // field return type name
+    refreshJwt: 'AuthPayload'
     signupUser: 'User'
     userLogin: 'AuthPayload'
   }
