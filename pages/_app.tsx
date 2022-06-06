@@ -1,4 +1,4 @@
-import 'styles/globals.css';
+import 'styles/tailwind.css';
 import { ApolloProvider } from '@apollo/client';
 import { Provider } from 'react-redux';
 import { UserContextWrapper } from 'context/UserContext';
@@ -14,7 +14,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         <UserContextWrapper>
           <Component {...pageProps} />
         </UserContextWrapper>
-
       </Provider>
     </ApolloProvider>
   );
