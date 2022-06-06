@@ -61,7 +61,7 @@
     "@types/jsonwebtoken": "^8.5.6",
     "@types/micro-cors": "^0.1.2",
     "@types/node": "16.11.12",
-    "@types/react": "^18.0.12",
+    "@types/react": "18.0.1",
     "@types/react-redux": "^7.1.24",
     "@types/secure-random-string": "^1.1.1",
     "autoprefixer": "^10.4.0",
