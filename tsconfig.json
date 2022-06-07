@@ -14,8 +14,12 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "typeRoots": [
+      "node_modules/@types",
+      ".nexus"
+    ]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.js"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", ".nexus"]
 }

@@ -18,6 +18,6 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
-      - run: npm install
-      - run: npm run build
-      - run: npm test
+      - run: yarn
+      - run: yarn build:only
+      - run: yarn test

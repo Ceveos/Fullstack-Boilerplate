@@ -44,9 +44,8 @@ export const schema = makeSchema({
   outputs: {
     typegen: join(
       process.cwd(),
-      'node_modules',
+      '.nexus',
       '@types',
-      'nexus-typegen',
       'index.d.ts'
     ),
     schema: join(process.cwd(), 'graphql', 'schema.graphql'),

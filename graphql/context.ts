@@ -61,7 +61,7 @@ export const createMockContext = (): MockContext => {
 
 export const createContext = (ctx: IncomingContext): Context => {
   const { JWT_SECRET } = process.env;
-  const {req, res} = ctx;
+  const { req } = ctx;
   const authorization = req?.headers?.authorization ?? '';
 
   assert(JWT_SECRET, 'Missing JWT_SECRET environment variable');
@@ -71,10 +71,12 @@ export const createContext = (ctx: IncomingContext): Context => {
   // console.log(`Authorization: ${authorization}`);
 
   const tokenStr = authorization.replace('Bearer ', '');
-  let token: UserToken | null;
+  let token: UserToken | null = null;
 
   try {
-    token = verify(tokenStr, JWT_SECRET) as UserToken;
+    if (tokenStr) {
+      token = verify(tokenStr, JWT_SECRET) as UserToken;
+    }
   } catch (error) {
     if (error instanceof TokenExpiredError) {
       throw new AuthenticationError('Token is expired');
@@ -85,8 +87,8 @@ export const createContext = (ctx: IncomingContext): Context => {
     else if (error instanceof NotBeforeError) {
       throw new AuthenticationError('Token not yet valid');
     } else {
+      throw new AuthenticationError('Unknown authentication error');
     }
-    token = null;
   }
 
   // const verifiedToken = verify(token, JWT_SECRET) as Token

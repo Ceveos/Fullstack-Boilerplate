@@ -1,4 +1,4 @@
-import { list, nonNull, nullable, queryField, queryType, stringArg} from 'nexus';
+import { nonNull, queryField, stringArg} from 'nexus';
 
 export const getUser = queryField('user', {
   type: 'User',

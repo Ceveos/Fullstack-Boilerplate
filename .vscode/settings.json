@@ -6,5 +6,5 @@
         "javascript",
         "typescript"
     ],
-    "jest.jestCommandLine": "yarn env-cmd -f .env.test jest"
+    "jest.jestCommandLine": "yarn env-cmd -f .env.test jest --runInBand"
 }

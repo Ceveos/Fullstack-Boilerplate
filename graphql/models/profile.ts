@@ -8,7 +8,7 @@ export const Profile = objectType({
   definition(t) {
     t.field(NexusPrisma.Profile.id);
     t.field(NexusPrisma.Profile.bio);
-    t.field(NexusPrisma.Profile.user);
+    t.field(NexusPrisma.Profile.User);
     t.nullable.field('user', {
       type: 'User',
       resolve: (parent) =>
@@ -16,7 +16,7 @@ export const Profile = objectType({
           .findUnique({
             where: { id: parent.id },
           })
-          .user(),
+          .User(),
     });
   }
 });
