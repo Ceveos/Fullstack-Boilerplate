@@ -19,5 +19,5 @@ jobs:
         with:
           node-version: '16'
       - run: yarn
-      - run: yarn build
+      - run: yarn build:only
       - run: yarn test
